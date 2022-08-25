@@ -1,16 +1,16 @@
-const router = require("express").Router();
-const AWS = require("aws-sdk");
-AWS.config.update({ region: "ap-northeast-1" });
+const router = require('express').Router();
+const AWS = require('aws-sdk');
+AWS.config.update({ region: 'ap-northeast-1' });
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const tableName = "User";
+const tableName = 'User';
 
-router.get("/users", (req, res) => {
+router.get('/users', (req, res) => {
   const response = {
     statusCode: 200,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      'Access-Control-Allow-Origin': '*',
     },
-    body: JSON.stringify({ message: "" }),
+    body: JSON.stringify({ message: '' }),
   };
 
   //TODO: 取得したいテーブル名をparamオブジェクトに設定する（中身を記述）
@@ -24,7 +24,7 @@ router.get("/users", (req, res) => {
       console.log(err);
       response.statusCode = 500;
       response.body = JSON.stringify({
-        message: "予期せぬエラーが発生しました",
+        message: '予期せぬエラーが発生しました',
         err: err,
       });
       res.send(response);
