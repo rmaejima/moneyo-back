@@ -1,10 +1,9 @@
 const router = require('express').Router();
-const AWS = require('aws-sdk');
-AWS.config.update({ region: 'ap-northeast-1' });
+const AWS = require('../../../utils/aws.js');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'User';
 
-router.get('/users', (req, res) => {
+router.get('/', (req, res) => {
   const response = {
     statusCode: 200,
     headers: {
