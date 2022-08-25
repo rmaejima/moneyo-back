@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 router.use((req, res, next) => {
+  // 現在時刻表示
   console.log(new Date().toISOString());
   next();
 });
@@ -9,8 +10,48 @@ router.get("/", (req, res) => {
   res.send("テスト");
 });
 
-router.get("/about", (req, res) => {
-  res.send("テストアバウト");
+const AWS = require("aws-sdk");
+AWS.config.update({ region: "ap-northeast-1" });
+const dynamo = new AWS.DynamoDB.DocumentClient();
+const tableName = "User";
+
+router.get("/users", (req, res) => {
+  const response = {
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify({ message: "" }),
+  };
+
+  //TODO: 取得したいテーブル名をparamオブジェクトに設定する（中身を記述）
+  const param = {
+    TableName: tableName,
+  };
+
+  //dynamo.scan()で全件取得
+  dynamo.scan(param, function (err, data) {
+    if (err) {
+      console.log(err);
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+        message: "予期せぬエラーが発生しました",
+        err: err,
+      });
+      res.send(response);
+      return;
+    }
+
+    //TODO: 全ユーザのpasswordを隠蔽する処理を記述
+    const items = data.Items;
+    if (items) {
+      items.forEach((item) => delete item.password);
+    }
+
+    //TODO: レスポンスボディの設定とコールバックの記述
+    response.body = { users: items };
+    res.send(response);
+  });
 });
 
 module.exports = router;
