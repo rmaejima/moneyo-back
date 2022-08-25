@@ -1,0 +1,19 @@
+service: mti-intern-team1
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: ap-northeast-1
+
+package:
+  exclude:
+    - .git/**
+    - test/**
+    - README.md
+
+functions:
+  exampleFunction:
+    handler: lambda.handler
+    events:
+      - http: ANY /
+      - http: "ANY {proxy+}"
