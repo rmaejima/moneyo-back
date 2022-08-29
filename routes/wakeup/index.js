@@ -43,4 +43,73 @@ router.put('/', (req, res) => {
   });
 });
 
+router.get('/:userId', (req, res) => {
+  
+  const userId = req.params.userId;
+
+  //DBから値を取得するためのKeyの宣言
+  const user_idealWakeUpTime_params = {
+    TableName: 'MoneyoIdealSleepTime',
+    Key: { userId },
+  };
+  const user_actWakeUpTime_params = {
+    TableName: 'MoneyoSleepTime',
+    Key: { userId },
+  }
+  
+  const run = async () => {
+    try {
+      //DynamoDBからデータを取得
+      const user_idealWakeUpTime = await dynamo.get(user_idealWakeUpTime_params).promise();
+      const user_actWakeUpTime = await dynamo.get(user_actWakeUpTime_params).promise();
+
+      // validation
+      if (
+        !user_idealWakeUpTime.Item ||
+        !user_actWakeUpTime.Item
+      ) {
+        res.status = 400;
+        const user_idealWakeUpTime_lack = user_idealWakeUpTime.Item ? '' : 'user_idealWakeUpTime';
+        const user_actWakeUpTime_lack = user_actWakeUpTime.Item ? '' : 'user_actWakeUpTime';
+        res.send({
+          message:
+            user_idealWakeUpTime_lack +
+            user_actWakeUpTime_lack +
+            'のデータが存在しません。',
+        });
+        return;
+      }
+
+      const idealWakeUpTime = new Date(user_idealWakeUpTime.Item.wakeUpTime);
+      const actWakeUpTime = new Date(user_actWakeUpTime.Item.wakeUpTime);
+      const diffWakeUpTime = new Date(idealWakeUpTime.getTime() - actWakeUpTime.getTime()) / (60*60*1000);
+      const addExperiencePoint = 10 - Math.abs(diffWakeUpTime) * 5
+
+      //DBから値を取得するためのKeyの宣言
+      const user_addExperiencePoint_params = {
+        TableName: 'MoneyoUserLevel',
+        Key: { userId },
+        ExpressionAttributeNames: {
+          '#ep': 'experiencePoint',
+        },
+        ExpressionAttributeValues: {
+          ':addExperiencePoint': addExperiencePoint,//experiencePointに加算する
+        },
+        UpdateExpression: 'SET #ep = #ep + :addExperiencePoint'
+      };
+      
+      //DynamoDBにデータを登録
+      await dynamo.update(user_addExperiencePoint_params).promise();
+
+      res.status = 200;
+      res.send({ message : "正常に処理が終了しました" });
+    }catch (err) {
+      console.log(err);
+      res.status = 400;
+      res.send({ message: err })
+    }
+  };
+  run();
+});
+
 module.exports = router;
