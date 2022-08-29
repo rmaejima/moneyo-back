@@ -3,6 +3,7 @@ const testRouter = require('./routes/test/index.js');
 const bedinRouter = require('./routes/bedin/index.js');
 const wakeupRouter = require('./routes/wakeup/index.js');
 const sleepRouter = require('./routes/sleep/index.js');
+const idealsleepRouter = require('./routes/idealsleep/index.js');
 
 const cors = require('cors');
 const app = express();
@@ -19,6 +20,7 @@ app.use('/test', testRouter);
 app.use('/bedin', bedinRouter);
 app.use('/wakeup', wakeupRouter);
 app.use('/sleep', sleepRouter);
+app.use('/idealsleep', idealsleepRouter);
 module.exports = app;
 
 app.listen(port, () => {
