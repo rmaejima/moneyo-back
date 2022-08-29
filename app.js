@@ -1,5 +1,6 @@
 const express = require('express');
 const testRouter = require('./routes/test/index.js');
+const sleepRouter = require('./routes/sleep/index.js');
 const userRouter = require('./routes/user/index.js');
 
 const app = express();
@@ -12,6 +13,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/test', testRouter);
+app.use('/sleep', sleepRouter);
 app.use('/user', userRouter);
 module.exports = app;
 
