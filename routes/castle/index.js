@@ -6,7 +6,6 @@ const tableName = 'MoneyoCastle';
 router.get('/:userId', (req, res) => {
   
   const userId = req.params.userId;
-  console.log(userId);
   
   //DBに登録するための情報の宣言
   const param = {
