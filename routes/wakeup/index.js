@@ -84,8 +84,6 @@ router.get('/:userId', (req, res) => {
       const actWakeUpTime = new Date(user_actWakeUpTime.Item.wakeUpTime);
       const diffWakeUpTime = new Date(idealWakeUpTime.getTime() - actWakeUpTime.getTime()) / (60*60*1000);
       const addExperiencePoint = 10 - Math.abs(diffWakeUpTime) * 5
-      console.log(Math.abs(diffWakeUpTime));
-      console.log(addExperiencePoint);
 
       //DBから値を取得するためのKeyの宣言
       const user_addExperiencePoint_params = {
