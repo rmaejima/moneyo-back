@@ -4,11 +4,11 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'MoneyoIdealSleepTime';
 
 router.post('/', (req, res) => {
-    //リクエストボディの内容をコンソールに記述して確認
-    console.log(req.body)
-
     //リクエストボディの内容をオブジェクトに変換
     const body = req.body;
+
+    //リクエストボディの内容をコンソールに記述して確認
+    console.log(body);
 
     //bedTime, wakeUpTime どちらかがなければエラーを返す
     if (!body.bedTime || !body.wakeUpTime) {
@@ -44,6 +44,44 @@ router.post('/', (req, res) => {
             });
             return;
         }
+    });
+});
+
+router.get('/:userId', (req, res) => {
+    //見たいユーザのuserId
+    const userId = req.params.userId;
+    console.log(userId);
+
+    //取得対象のテーブル名と検索に使うキーをparamに宣言
+    const param = {
+        TableName: tableName,
+        Key: {
+            userId: userId
+        }
+    };
+    console.log(param);
+
+    //dynamo.get()でDBからデータを取得
+    dynamo.get(param, function (err, data) {
+        //エラー処理
+        if (err) {
+            res.statusCode = 500;
+            res.send({
+                message: "予期せぬエラーが発生しました"
+            });
+            return;
+        }
+
+        //検索結果の内容をitemに格納
+        const item = data.Item;
+        console.log(item);
+
+        //itemをレスポンスボディに入れて返す
+        res.send({
+            item
+        })
+
+        return;
     });
 });
 
