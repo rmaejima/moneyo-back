@@ -12,7 +12,7 @@ router.post('/', (req, res) => {
 
   //bedTime, wakeUpTime どちらかがなければエラーを返す
   if (!body.bedTime || !body.wakeUpTime) {
-    res.statusCode = 400;
+    res.status = 400;
     res.send({
       message: 'bedTime or wakeUpTimeが抜けています',
     });
@@ -32,7 +32,7 @@ router.post('/', (req, res) => {
   //dynamo.put()でDBにデータを登録
   dynamo.put(param, function (err, data) {
     if (err) {
-      res.statusCode = 500;
+      res.status = 500;
       res.send({
         message: '予期せぬエラーが発生しました',
       });
@@ -62,7 +62,7 @@ router.get('/:userId', (req, res) => {
   dynamo.get(param, function (err, data) {
     //エラー処理
     if (err) {
-      res.statusCode = 500;
+      res.status = 500;
       res.send({
         message: '予期せぬエラーが発生しました',
       });
@@ -71,11 +71,14 @@ router.get('/:userId', (req, res) => {
 
     //検索結果の内容をitemに格納
     const item = data.Item;
-    console.log('result: ' + item);
+    if (!item) {
+      res.status = 400;
+      res.send({ message: 'アイテムが存在しませんでした。' });
+      return;
+    }
 
     //itemをレスポンスボディに入れて返す
     res.send(item);
-
     return;
   });
 });
