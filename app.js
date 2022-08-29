@@ -1,6 +1,7 @@
 const express = require('express');
 const testRouter = require('./routes/test/index.js');
 const sleepRouter = require('./routes/sleep/index.js');
+const idealsleepRouter = require('./routes/idealsleep/index.js');
 
 const app = express();
 const port = 3000;
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
 
 app.use('/test', testRouter);
 app.use('/sleep', sleepRouter);
+app.use('/idealsleep', idealsleepRouter);
 module.exports = app;
 
 app.listen(port, () => {

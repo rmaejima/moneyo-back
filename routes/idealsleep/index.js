@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const AWS = require('../../utils/aws.js');
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const tableName = 'MoneyoSleepTime';
+const tableName = 'MoneyoIdealSleepTime';
 
 router.post('/', (req, res) => {
     //リクエストボディの内容をオブジェクトに変換
