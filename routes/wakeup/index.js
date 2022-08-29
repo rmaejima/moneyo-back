@@ -4,10 +4,9 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'MoneyoSleepTime';
 
 router.put('/', (req, res) => {
-  
   const body = req.body;
-  console.log(body)
-  
+  console.log(body);
+
   //DBを更新するための情報の宣言
   const param = {
     TableName: tableName,
@@ -18,11 +17,11 @@ router.put('/', (req, res) => {
       '#w': 'wakeUpTime',
     },
     ExpressionAttributeValues: {
-      ':newWakeUpTime': body.wakeUpTime,//wakeUpを更新する
+      ':newWakeUpTime': body.wakeUpTime, //wakeUpを更新する
     },
-    UpdateExpression: 'SET #w = :newWakeUpTime'
+    UpdateExpression: 'SET #w = :newWakeUpTime',
   };
-  
+
   //DynamoDBにデータを登録
   dynamo.update(param, function (err, data) {
     if (err) {
@@ -30,13 +29,13 @@ router.put('/', (req, res) => {
       console.log(err);
       res.statusCode = 500;
       res.send({
-        message: "予期せぬエラーが発生しました",
+        message: '予期せぬエラーが発生しました',
       });
       return;
     } else {
       //更新に成功した場合の処理
       res.send({
-        message: "起床時間を更新しました",
+        message: '起床時間を更新しました',
       });
       return;
     }
