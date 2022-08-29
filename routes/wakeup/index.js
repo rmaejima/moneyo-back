@@ -3,24 +3,30 @@ const AWS = require('../../utils/aws.js');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'MoneyoSleepTime';
 
-router.post('/', (req, res) => {
+router.put('/', (req, res) => {
   
   const body = req.body;
   console.log(body)
-    
-  //DBに登録するための情報の宣言
+  
+  //DBを更新するための情報の宣言
   const param = {
     TableName: tableName,
-    Item: {
+    Key: {
       userId: body.userId,
-      bedTime: body.bedTime,
     },
+    ExpressionAttributeNames: {
+      '#w': 'wakeUpTime',
+    },
+    ExpressionAttributeValues: {
+      ':newWakeUpTime': body.wakeUpTime,//wakeUpを更新する
+    },
+    UpdateExpression: 'SET #w = :newWakeUpTime'
   };
   
   //DynamoDBにデータを登録
-  dynamo.put(param, function (err, data) {
+  dynamo.update(param, function (err, data) {
     if (err) {
-      //登録に失敗した場合の処理
+      //更新に失敗した場合の処理
       console.log(err);
       res.statusCode = 500;
       res.send({
@@ -28,9 +34,9 @@ router.post('/', (req, res) => {
       });
       return;
     } else {
-      //登録に成功した場合の処理
+      //更新に成功した場合の処理
       res.send({
-        message: "DBに就寝時間を登録しました",
+        message: "起床時間を更新しました",
       });
       return;
     }
