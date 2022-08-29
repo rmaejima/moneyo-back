@@ -4,17 +4,16 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'MoneyoCastle';
 
 router.get('/:userId', (req, res) => {
-  
   const userId = req.params.userId;
-  
+
   //DBに登録するための情報の宣言
   const param = {
     TableName: tableName,
     Key: {
-      userId: userId
+      userId: userId,
     },
   };
-  
+
   //DynamoDBにデータを取得
   dynamo.get(param, function (err, data) {
     if (err) {
@@ -22,16 +21,19 @@ router.get('/:userId', (req, res) => {
       console.log(err);
       res.statusCode = 500;
       res.send({
-        message: "予期せぬエラーが発生しました",
+        message: '予期せぬエラーが発生しました',
       });
       return;
     }
 
     const item = data.Item;
-    console.log(item)
-    res.send({
-      item,
-    });
+    if (!item) {
+      res.status = 400;
+      res.send({ message: 'アイテムがありませんでした。' });
+      return;
+    }
+    console.log(item);
+    res.send(item);
   });
 });
 
