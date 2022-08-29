@@ -4,10 +4,12 @@ const bedinRouter = require('./routes/bedin/index.js');
 const wakeupRouter = require('./routes/wakeup/index.js');
 const sleepRouter = require('./routes/sleep/index.js');
 
+const cors = require('cors');
 const app = express();
-const port = 3000;
+const port = 8081;
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/', (req, res) => {
   return res.send('Hello');
