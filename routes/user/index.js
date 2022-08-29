@@ -1,7 +1,5 @@
 const router = require('express').Router();
-const { default: run } = require('npm-check-updates');
 const AWS = require('../../utils/aws.js');
-const { use } = require('../test/index.js');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 router.get('/:userId', (req, res, next) => {
